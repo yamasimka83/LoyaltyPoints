@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add
+            id="LoyaltyGroup_LoyaltyPoints::loyaltyTab"
+            title="Loyalty Program"
+            module="LoyaltyGroup_LoyaltyPoints"
+            sortOrder="43"
+            resource="LoyaltyGroup_LoyaltyPoints::loyaltyTab"
+        />
+        <add
+                id="LoyaltyGroup_LoyaltyPoints::loyalty"
+                title="Loyalty Program"
+                module="LoyaltyGroup_LoyaltyPoints"
+                action="adminhtml/system_config/edit/section/loyaltyPoints"
+                resource="LoyaltyGroup_LoyaltyPoints::loyalty"
+                parent="LoyaltyGroup_LoyaltyPoints::loyaltyTab"
+        />
+    </menu>
+</config>
