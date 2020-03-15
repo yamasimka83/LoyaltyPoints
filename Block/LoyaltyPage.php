@@ -25,7 +25,7 @@ class LoyaltyPage extends Template
 
     private $encryptor;
 
-    protected $request;
+    private $request;
 
     private $repository;
 

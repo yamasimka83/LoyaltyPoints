@@ -5,11 +5,8 @@ define(
     function (Component) {
         'use strict';
         return Component.extend({
-            /**
-             * @override
-             */
-            isDisplayed: function () {
-                return this.getPureValue() !== 0;
+            defaults: {
+                template: 'LoyaltyGroup_LoyaltyPoints/checkout/cart/totals/loyalty_points'
             }
         });
     }

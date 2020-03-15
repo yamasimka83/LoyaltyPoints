@@ -3,36 +3,45 @@ define(
         'Magento_Checkout/js/view/summary/abstract-total',
         'Magento_Checkout/js/model/quote',
         'Magento_Catalog/js/price-utils',
-        'Magento_Checkout/js/model/totals'
+        'Magento_Checkout/js/model/totals',
+        'Magento_Customer/js/model/customer'
     ],
-    function (Component, quote, priceUtils, totals) {
+    function (Component, quote, priceUtils, totals, customer) {
         "use strict";
         return Component.extend({
             defaults: {
-                isFullTaxSummaryDisplayed: window.checkoutConfig.isFullTaxSummaryDisplayed || false,
                 template: 'LoyaltyGroup_LoyaltyPoints/checkout/summary/loyalty_points'
             },
             totals: quote.getTotals(),
-            isTaxDisplayedInGrandTotal: window.checkoutConfig.includeTaxInGrandTotal || false,
-
-            isDisplayed: function() {
-                return this.isFullMode() && this.getPureValue() !== 0;
+            isLoggedIn: function() {
+                return  customer.isLoggedIn() && (this.getPureValue() !== 0);
             },
 
-            getValue: function() {
-                var price = 0;
-                if (this.totals()) {
-                    price = totals.getSegment('loyalty_points').value;
+            getPointsTotal: function() {
+                let discountSegments;
+
+                if (!this.totals()) {
+                    return null;
                 }
-                return this.getFormattedPrice(price);
+
+                discountSegments = this.totals()['total_segments'].filter(function (segment) {
+                    return segment.code.indexOf('loyalty_points') !== -1;
+                });
+                console.dir(discountSegments);
+                return discountSegments.length ? discountSegments[0] : null;
             },
-            getPureValue: function() {
-                var price = 0;
-                if (this.totals()) {
-                    price = totals.getSegment('loyalty_points').value;
-                }
-                return price;
-            }
+            getTitle: function () {
+                return this.title;
+            },
+            getPureValue: function () {
+                let pointsTotal = this.getPointsTotal();
+                alert('pointsTotal' + pointsTotal.value);
+                return pointsTotal ? pointsTotal.value : null;
+            },
+            getValue: function () {
+                return this.getFormattedPrice(this.getPureValue());
+            },
+            title: 'Loyalty Points'
         });
     }
 );

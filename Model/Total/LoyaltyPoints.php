@@ -36,44 +36,27 @@ class LoyaltyPoints extends AbstractTotal
         ShippingAssignmentInterface $shippingAssignment,
         Total $total
     ) {
-        if($this->session->isLoggedIn()) {
             parent::collect($quote, $shippingAssignment, $total);
 
             $items = $shippingAssignment->getItems();
             if (!count($items)) {
                 return $this;
             }
+            if($this->session->isLoggedIn()) {
+                $id = $this->session->getCustomerId();
+                $this->points = $this->repository->getById($id)->getPoints();
+                $amount = $this->points;
+                $allTotalAmounts = array_sum($total->getAllTotalAmounts());
+                $allBaseTotalAmounts = array_sum($total->getAllBaseTotalAmounts());
 
-            $id = $this->session->getCustomerId();
-            $this->points = $this->repository->getById($id)->getPoints();
-            $amount = $this->points;
-            $allTotalAmounts = array_sum($total->getAllTotalAmounts());
-//            var_dump($allTotalAmounts);
-            $allBaseTotalAmounts = array_sum($total->getAllBaseTotalAmounts());
-//            var_dump($allBaseTotalAmounts);
+                $totalSale = $amount > $allTotalAmounts ? ($allTotalAmounts - 0.01) : $amount;
+                $totalBaseSale = $amount > $allBaseTotalAmounts ? ($allBaseTotalAmounts - 0.01) : $amount;
 
-            $totalSale = $amount > $allTotalAmounts ? ($allTotalAmounts - 0.01) : $amount;
-//            var_dump($totalSale);
-            $totalBaseSale = $amount > $allBaseTotalAmounts ? ($allBaseTotalAmounts - 0.01) : $amount;
+                $total->addTotalAmount('loyalty_points', -$totalSale);
+                $total->addBaseTotalAmount('loyalty_points', -$totalBaseSale);
 
-            $total->addTotalAmount('loyalty_points', -$totalSale);
-            $total->addBaseTotalAmount('loyalty_points', -$totalBaseSale);
-//            var_dump($total->getGrandTotal());
-//            var_dump($total);
-
-//        $total->setCustom($amount);
-//        $total->setBaseCustom($amount);
-//        if($total->getGrandTotal() <= 0) {
-//            $total->setGrandTotal(0.01);
-//        }
-//        if($total->getBaseGrandTotal() <= 0) {
-//            $total->setBaseGrandTotal(0.01);
-//        }
-//        $total->setGrandTotal($total->getGrandTotal() + $amount*2);
-//        $total->setBaseGrandTotal($total->getBaseGrandTotal() + $amount*3);
-
-            return $this;
-        }
+//                return $this;
+            }
     }
 
     /**
@@ -100,10 +83,12 @@ class LoyaltyPoints extends AbstractTotal
      */
     public function fetch(Quote $quote, Total $total)
     {
-        return [
-            'code' => 'loyalty_points',
-            'title' => 'loyalty_points',
-            'value' => $this->points
-        ];
+        if($this->session->isLoggedIn()) {
+            return [
+                'code' => 'loyalty_points',
+                'title' => 'loyalty_points',
+                'value' => $this->points
+            ];
+        }
     }
 }
