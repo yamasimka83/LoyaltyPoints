@@ -1,13 +1,4 @@
 <?xml version="1.0"?>
-<!--
-/**
- * di.xml
- *
- * @author    Pavel Usachev <pausachev@gmail.com>
- * @copyright 2019 Pavel Usachev
- * @license   https://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- */
--->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="LoyaltyGroup\LoyaltyPoints\Api\Model\UserInterface"

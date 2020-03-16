@@ -2,7 +2,6 @@
 
 Namespace LoyaltyGroup\LoyaltyPoints\Model\Total;
 
-use Magento\Framework\Phrase;
 use Magento\Quote\Api\Data\ShippingAssignmentInterface;
 use Magento\Quote\Model\Quote\Address\Total\AbstractTotal;
 use Magento\Quote\Model\Quote\Address\Total;
@@ -12,15 +11,30 @@ use Magento\Customer\Model\Session;
 
 class LoyaltyPoints extends AbstractTotal
 {
-    private $session;
-    private $repository;
-    private $points;
     /**
-     * Custom constructor.
-     *
-     * @param CustomTotalHelper $helper
+     * @var Session
      */
-    public function __construct(UserRepositoryInterface $repository, Session $session) {
+    private $session;
+
+    /**
+     * @var UserRepositoryInterface
+     */
+    private $repository;
+
+    /**
+     * int $points
+     */
+    private $points;
+
+    /**
+     * LoyaltyPoints constructor.
+     * @param UserRepositoryInterface $repository
+     * @param Session $session
+     */
+    public function __construct(
+        UserRepositoryInterface $repository,
+        Session $session
+    ) {
         $this->repository = $repository;
         $this->session = $session;
     }
@@ -29,7 +43,7 @@ class LoyaltyPoints extends AbstractTotal
      * @param Quote $quote
      * @param ShippingAssignmentInterface $shippingAssignment
      * @param Total $total
-     * @return $this
+     * @return void
      */
     public function collect(
         Quote $quote,
@@ -38,10 +52,10 @@ class LoyaltyPoints extends AbstractTotal
     ) {
             parent::collect($quote, $shippingAssignment, $total);
 
-            $items = $shippingAssignment->getItems();
-            if (!count($items)) {
-                return $this;
-            }
+//            $items = $shippingAssignment->getItems();
+//            if (!count($items)) {
+//                return $this;
+//            }
             if($this->session->isLoggedIn()) {
                 $id = $this->session->getCustomerId();
                 $this->points = $this->repository->getById($id)->getPoints();

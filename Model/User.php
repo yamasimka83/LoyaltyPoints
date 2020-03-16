@@ -3,8 +3,8 @@
 namespace LoyaltyGroup\LoyaltyPoints\Model;
 
 use LoyaltyGroup\LoyaltyPoints\Api\Model\UserInterface;
-use Magento\Framework\Model\AbstractModel;
 use LoyaltyGroup\LoyaltyPoints\Model\ResourceModel\User as ResourceModel;
+use Magento\Framework\Model\AbstractModel;
 
 class User extends AbstractModel implements UserInterface
 {
@@ -14,7 +14,7 @@ class User extends AbstractModel implements UserInterface
         $this->_init(ResourceModel::class);
     }
     /**
-     * @return mixed
+     * @inheritDoc
      */
     public function getPoints()
     {
@@ -22,7 +22,7 @@ class User extends AbstractModel implements UserInterface
     }
 
     /**
-     * @param $points
+     * @inheritDoc
      */
     public function setPoints($points)
     {

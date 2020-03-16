@@ -1,8 +1,8 @@
 <?php
 /** @var LoyaltyGroup\LoyaltyPoints\Block\LoyaltyPage $block*/
 ?>
-<span> My Referral Link: <?= $block->createReferralLink(); ?></span> <br/>
+<span> My Referral Link: <strong><?= $block->createReferralLink(); ?></strong></span> <br/>
 <span> My Loyalty Points:  <?= $block->getPointsById(); ?></span><br/>
-<span> My percent of cashback: <?= $block->getPercentOfLoyalty(); ?> %</span><br/>
 
+<span> Test: <?php var_dump($block->testCustomerRepository());?></span>
 

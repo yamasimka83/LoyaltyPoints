@@ -10,7 +10,7 @@ use Magento\Framework\Controller\ResultInterface;
 class Loyalty extends AbstractAccount
 {
     /**
-     * Render posts.
+     * Render Loyalty Points page in customer account.
      *
      * @return ResponseInterface|ResultInterface
      */

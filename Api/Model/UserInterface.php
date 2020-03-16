@@ -5,12 +5,16 @@ namespace LoyaltyGroup\LoyaltyPoints\Api\Model;
 interface UserInterface
 {
     /**
-     * @return mixed
+     * Get loyalty points.
+     *
+     * @return integer
      */
     public function getPoints();
 
     /**
+     * Set loyalty points.
+     *
      * @param $points
      */
-    public function setPoints($points);
+    public function setPoints(int $points);
 }

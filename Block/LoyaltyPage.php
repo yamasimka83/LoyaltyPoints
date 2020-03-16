@@ -2,133 +2,88 @@
 
 namespace LoyaltyGroup\LoyaltyPoints\Block;
 
-
-use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
-use Magento\Store\Model\ScopeInterface;
-use LoyaltyGroup\LoyaltyPoints\Api\Repository\UserRepositoryInterface;
-use Magento\Framework\Api\SearchCriteriaBuilder;
-use LoyaltyGroup\LoyaltyPoints\Model\CustomerSession;
-use LoyaltyGroup\LoyaltyPoints\Model\CustomerSessionFactory;
-use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Framework\App\Request\Http;
 use Magento\Framework\Encryption\EncryptorInterface;
-
+use Magento\Customer\Model\Session;
+use Magento\Store\Model\StoreManagerInterface;
+use LoyaltyGroup\LoyaltyPoints\Api\Repository\UserRepositoryInterface;
 
 class LoyaltyPage extends Template
 {
     /**
-     * @var SerializerInterface
+     * @var Session
      */
-    private $serializer;
-
-    private $encryptor;
-
-    private $request;
-
-    private $repository;
-
-    private $searchCriteriaBuilder;
-
-    private $customerSession;
-
-    private $customerSessionFactory;
+    private $session;
 
     /**
-     * @var ScopeConfigInterface
+     * @var EncryptorInterface
      */
-    protected $scopeConfig;
+    private $encryptor;
 
-    const XML_PATH_COUNT_LOYALTY = 'loyaltyPoints/general/cashback';
+    /**
+     * @var UserRepositoryInterface
+     */
+    private $repository;
 
+    /**
+     * @var StoreManagerInterface
+     */
+    private $storeManager;
+
+    /**
+     * LoyaltyPage constructor.
+     *
+     * @param EncryptorInterface $encryptor
+     * @param Session $session
+     * @param Context $context
+     * @param StoreManagerInterface $storeManager
+     * @param UserRepositoryInterface $repository
+     * @param array $data
+     */
     public function __construct(
         EncryptorInterface $encryptor,
-        Http $request,
-        ScopeConfigInterface $scopeConfig,
+        Session $session,
         Context $context,
+        StoreManagerInterface $storeManager,
         UserRepositoryInterface $repository,
-        SearchCriteriaBuilder $searchCriteriaBuilder,
-        CustomerSession $customerSession,
-        CustomerSessionFactory $customerSessionFactory,
-        SerializerInterface $serializer,
-
         array $data = []
     ) {
         $this->encryptor = $encryptor;
-        $this->request = $request;
+        $this->storeManager = $storeManager;
+        $this->session = $session;
         $this->repository = $repository;
-        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         parent::__construct($context, $data);
-        $this->scopeConfig = $scopeConfig;
-        $this->customerSession = $customerSession;
-        $this->customerSessionFactory = $customerSessionFactory;
-        $this->serializer = $serializer;
     }
 
     /**
-     * Sample function returning config value
-     * @param string|null $storeId
+     * Get loyalty points by user id.
+     *
      * @return mixed
+     * @throws NoSuchEntityException
      */
-
-    public function getPercentOfLoyalty(?string $storeId = null)
-    {
-        $persentOfLoyalty = $this->scopeConfig->getValue(
-            self::XML_PATH_COUNT_LOYALTY,
-            ScopeInterface::SCOPE_STORE,
-            $storeId
-        );
-        return $persentOfLoyalty;
-    }
-
-    public function getCustomerId()
-    {
-        $_customerSession = $this->customerSessionFactory->create();
-        $customerID = $_customerSession->getLoggedinCustomerId();
-        return $customerID;
-    }
-
-    public function getCustomerUrl()
-    {
-        $_customerSession = $this->customerSessionFactory->create();
-        $url = $_customerSession->getBaseUrlOfMyStore();
-        return $url;
-    }
-
     public function getPointsById()
     {
-        $user = $this->repository->getById($this->getCustomerId());
+        $id = $this->session->getCustomerId();
+        $user = $this->repository->getById($id);
         return $user->getPoints();
     }
 
+    /**
+     * Dynamic create a personal referral link.
+     *
+     * @return string
+     * @throws NoSuchEntityException
+     */
     public function createReferralLink()
     {
-        $link = $this->getCustomerUrl();
         /** @TODO fix encrypt */
-        $encrypt = $this->encryptor->encrypt($this->getCustomerId());
-        $link .= '?ref=';
-        $link .= $encrypt;
+
+        $url = $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_WEB);
+        $encrypt = $this->encryptor->encrypt($this->session->getCustomerId());
+        $link = $url . "?ref=" . $encrypt;
         return $link;
-    }
-
-    public function getJsonConfig()
-    {
-        $userInfo = [];
-
-        $userInfo['points'] = $this->getPointsById();
-        $userInfo['percentOfLoyalty'] = $this->getPercentOfLoyalty();
-        $userInfo['referralLink'] = $this->createReferralLink();
-
-        return $this->serializer->serialize($userInfo);
-    }
-    public function getIdFromUrl()
-    {
-        $id = $this->request->getParam('id');
-        return $id;
-    }
-    public function showReferralId()
-    {   $this->customerSession->setReferralId($this->getIdFromUrl());
-        return $this->customerSession->getReferralId();
     }
 }
