@@ -1,93 +1,59 @@
 <?php
 
-Namespace LoyaltyGroup\LoyaltyPoints\Model\Total;
+namespace LoyaltyGroup\LoyaltyPoints\Model\Total;
 
-use Magento\Quote\Api\Data\ShippingAssignmentInterface;
+use LoyaltyGroup\LoyaltyPoints\Api\Model\Total\LoyaltyPointsInterface;
 use Magento\Quote\Model\Quote\Address\Total\AbstractTotal;
-use Magento\Quote\Model\Quote\Address\Total;
 use Magento\Quote\Model\Quote;
-use LoyaltyGroup\LoyaltyPoints\Api\Repository\UserRepositoryInterface;
+use Magento\Quote\Api\Data\ShippingAssignmentInterface;
+use Magento\Quote\Model\Quote\Address\Total;
+use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Model\Session;
 
-class LoyaltyPoints extends AbstractTotal
+
+/**
+ * Class LoyaltyPoints
+ * @package LoyaltyGroup\LoyaltyPoints\Model\Total
+ */
+class LoyaltyPoints extends AbstractTotal implements LoyaltyPointsInterface
 {
+    /**
+     * @var CustomerRepositoryInterface
+     */
+    private $customerRepository;
+
     /**
      * @var Session
      */
     private $session;
 
-    /**
-     * @var UserRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * int $points
-     */
-    private $points;
-
-    /**
-     * LoyaltyPoints constructor.
-     * @param UserRepositoryInterface $repository
-     * @param Session $session
-     */
-    public function __construct(
-        UserRepositoryInterface $repository,
-        Session $session
-    ) {
-        $this->repository = $repository;
+    public function __construct(CustomerRepositoryInterface $customerRepository, Session $session)
+    {
+        $this->customerRepository = $customerRepository;
         $this->session = $session;
     }
 
-    /**
-     * @param Quote $quote
-     * @param ShippingAssignmentInterface $shippingAssignment
-     * @param Total $total
-     * @return void
-     */
-    public function collect(
-        Quote $quote,
-        ShippingAssignmentInterface $shippingAssignment,
-        Total $total
-    ) {
-            parent::collect($quote, $shippingAssignment, $total);
-
-//            $items = $shippingAssignment->getItems();
-//            if (!count($items)) {
-//                return $this;
-//            }
-            if($this->session->isLoggedIn()) {
-                $id = $this->session->getCustomerId();
-                $this->points = $this->repository->getById($id)->getPoints();
-                $amount = $this->points;
-                $allTotalAmounts = array_sum($total->getAllTotalAmounts());
-                $allBaseTotalAmounts = array_sum($total->getAllBaseTotalAmounts());
-
-                $totalSale = $amount > $allTotalAmounts ? ($allTotalAmounts - 0.01) : $amount;
-                $totalBaseSale = $amount > $allBaseTotalAmounts ? ($allBaseTotalAmounts - 0.01) : $amount;
-
-                $total->addTotalAmount('loyalty_points', -$totalSale);
-                $total->addBaseTotalAmount('loyalty_points', -$totalBaseSale);
-
-//                return $this;
-            }
-    }
-
-    /**
-     * @param Total $total
-     */
-    protected function clearValues(Total $total)
+    public function collect(Quote $quote, ShippingAssignmentInterface $shippingAssignment, Total $total)
     {
-        $total->setTotalAmount('subtotal', 0);
-        $total->setBaseTotalAmount('subtotal', 0);
-        $total->setTotalAmount('tax', 0);
-        $total->setBaseTotalAmount('tax', 0);
-        $total->setTotalAmount('discount_tax_compensation', 0);
-        $total->setBaseTotalAmount('discount_tax_compensation', 0);
-        $total->setTotalAmount('shipping_discount_tax_compensation', 0);
-        $total->setBaseTotalAmount('shipping_discount_tax_compensation', 0);
-        $total->setSubtotalInclTax(0);
-        $total->setBaseSubtotalInclTax(0);
+        $allTotalAmounts = array_sum($total->getAllTotalAmounts());
+        $allBaseTotalAmounts = array_sum($total->getAllBaseTotalAmounts());
+
+        $points = 0;
+
+        if ($this->session->isLoggedIn()) {
+            $user = $this->customerRepository->getById($this->session->getCustomerId());
+            $points = $user->getCustomAttribute('loyalty_points')->getValue();
+
+        }
+        $totalSale = $points >= $allTotalAmounts ? ($allTotalAmounts - 0.01) : $points;
+        $totalBaseSale = $points >= $allBaseTotalAmounts ? ($allBaseTotalAmounts - 0.01) : $points;
+
+        $total->addTotalAmount($this->getCode(), -$totalSale);
+        $total->addBaseTotalAmount($this->getCode(), -$totalBaseSale);
+        $quote->setData(self::CODE_AMOUNT, $totalSale);
+        $quote->setData(self::BASE_CODE_AMOUNT, $totalBaseSale);
+
+        return $this;
     }
 
     /**
@@ -97,12 +63,15 @@ class LoyaltyPoints extends AbstractTotal
      */
     public function fetch(Quote $quote, Total $total)
     {
-        if($this->session->isLoggedIn()) {
-            return [
-                'code' => 'loyalty_points',
-                'title' => 'loyalty_points',
-                'value' => $this->points
-            ];
-        }
+        return [
+            'code' => $this->getCode(),
+            'title' => $this->getLabel(),
+            'value' => [$total->getData(self::CODE_AMOUNT), round($this->customerRepository->getById($this->session->getCustomerId())->getCustomAttribute('loyalty_points')->getValue(), 2)]
+        ];
+    }
+
+    public function getLabel()
+    {
+        return __(self::LABEL);
     }
 }

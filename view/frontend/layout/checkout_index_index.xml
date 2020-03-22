@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceBlock name="checkout.root">
             <arguments>
@@ -14,18 +14,23 @@
                                                 <item name="totals" xsi:type="array">
                                                     <item name="children" xsi:type="array">
                                                         <item name="loyalty_points" xsi:type="array">
-                                                            <item name="component" xsi:type="string">LoyaltyGroup_LoyaltyPoints/js/view/checkout/cart/totals/loyalty_points</item>
+                                                            <item name="component" xsi:type="string">LoyaltyGroup_LoyaltyPoints/js/view/checkout/summary/loyalty_points</item>
                                                             <item name="sortOrder" xsi:type="string">20</item>
+                                                            <item name="config" xsi:type="array">
+                                                                <item name="title" xsi:type="string">Loyalty Points!</item>
+                                                                <item name="template" xsi:type="string">LoyaltyGroup_LoyaltyPoints/checkout/summary/loyalty_points</item>
+                                                            </item>
                                                         </item>
                                                     </item>
                                                 </item>
-                                                <item name="cart_items" xsi:type="array">
+                                                <item name="itemsBefore" xsi:type="array">
+                                                    <item name="component" xsi:type="string">uiComponent</item>
                                                     <item name="children" xsi:type="array">
-                                                        <item name="details" xsi:type="array">
-                                                            <item name="children" xsi:type="array">
-                                                                <item name="subtotal" xsi:type="array">
-                                                                    <item name="component" xsi:type="string">Magento_Tax/js/view/checkout/summary/item/details/subtotal</item>
-                                                                </item>
+                                                        <item name="loyalty_points_check" xsi:type="array">
+                                                            <item name="component" xsi:type="string">LoyaltyGroup_LoyaltyPoints/js/view/checkout/summary/loyalty_points</item>
+                                                            <item name="sortOrder" xsi:type="string">20</item>
+                                                            <item name="config" xsi:type="array">
+                                                                <item name="template" xsi:type="string">LoyaltyGroup_LoyaltyPoints/checkout/summary/loyalty_points_check</item>
                                                             </item>
                                                         </item>
                                                     </item>

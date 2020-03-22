@@ -2,6 +2,7 @@
 
 namespace LoyaltyGroup\LoyaltyPoints\Block;
 
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Template;
@@ -9,7 +10,7 @@ use Magento\Framework\View\Element\Template\Context;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Customer\Model\Session;
 use Magento\Store\Model\StoreManagerInterface;
-use LoyaltyGroup\LoyaltyPoints\Api\Repository\UserRepositoryInterface;
+use Magento\Customer\Api\CustomerRepositoryInterface;
 
 class LoyaltyPage extends Template
 {
@@ -24,14 +25,14 @@ class LoyaltyPage extends Template
     private $encryptor;
 
     /**
-     * @var UserRepositoryInterface
-     */
-    private $repository;
-
-    /**
      * @var StoreManagerInterface
      */
     private $storeManager;
+
+    /**
+     * @var CustomerRepositoryInterface
+     */
+    private $customerRepository;
 
     /**
      * LoyaltyPage constructor.
@@ -40,7 +41,7 @@ class LoyaltyPage extends Template
      * @param Session $session
      * @param Context $context
      * @param StoreManagerInterface $storeManager
-     * @param UserRepositoryInterface $repository
+     * @param CustomerRepositoryInterface $customerRepository
      * @param array $data
      */
     public function __construct(
@@ -48,13 +49,13 @@ class LoyaltyPage extends Template
         Session $session,
         Context $context,
         StoreManagerInterface $storeManager,
-        UserRepositoryInterface $repository,
+        CustomerRepositoryInterface $customerRepository,
         array $data = []
     ) {
         $this->encryptor = $encryptor;
         $this->storeManager = $storeManager;
         $this->session = $session;
-        $this->repository = $repository;
+        $this->customerRepository = $customerRepository;
         parent::__construct($context, $data);
     }
 
@@ -63,12 +64,13 @@ class LoyaltyPage extends Template
      *
      * @return mixed
      * @throws NoSuchEntityException
+     * @throws LocalizedException
      */
-    public function getPointsById()
+    public function getLoyaltyPoints()
     {
         $id = $this->session->getCustomerId();
-        $user = $this->repository->getById($id);
-        return $user->getPoints();
+        $user = $this->customerRepository->getById($id);
+        return $user->getCustomAttribute('loyalty_points')->getValue();
     }
 
     /**
@@ -79,10 +81,8 @@ class LoyaltyPage extends Template
      */
     public function createReferralLink()
     {
-        /** @TODO fix encrypt */
-
         $url = $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_WEB);
-        $encrypt = $this->encryptor->encrypt($this->session->getCustomerId());
+        $encrypt = urlencode($this->encryptor->encrypt($this->session->getCustomerId()));
         $link = $url . "?ref=" . $encrypt;
         return $link;
     }

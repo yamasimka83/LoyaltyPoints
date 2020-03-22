@@ -1,8 +1,6 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <preference for="LoyaltyGroup\LoyaltyPoints\Api\Model\UserInterface"
-                type="LoyaltyGroup\LoyaltyPoints\Model\User"/>
-    <preference for="LoyaltyGroup\LoyaltyPoints\Api\Repository\UserRepositoryInterface"
-                type="LoyaltyGroup\LoyaltyPoints\Repository\UserRepository"/>
+    <preference for="LoyaltyGroup\LoyaltyPoints\Api\Builder\LoyaltyPointsBuilderInterface"
+                type="LoyaltyGroup\LoyaltyPoints\Builder\LoyaltyPointsBuilder" />
 </config>

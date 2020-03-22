@@ -23,7 +23,7 @@ class BeforeSendResponse implements ObserverInterface
     public function execute(Observer $observer)
     {
         if(!empty($observer->getEvent()->getData('request')->getParam('ref'))) {
-            $decrypt = $observer->getEvent()->getData('request')->getParam('ref');
+            $decrypt = urldecode($observer->getEvent()->getData('request')->getParam('ref'));
             $id = $this->encryptor->decrypt($decrypt);
             if($id != $this->session->getCustomerId()) {
                 $this->session->setReferralId($id);

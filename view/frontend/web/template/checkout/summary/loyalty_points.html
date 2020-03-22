@@ -1,11 +1,10 @@
-<!-- ko if: isLoggedIn() -->
-<tr class="totals loyalty_points excl">
+<!-- ko if: isDisplayed() -->
+<tr class="totals loyalty_points_total excl" data-bind="visible: isVisible">
     <th class="mark" scope="row">
-        <span class="title" data-bind="text: getTitle()"></span>
-        <span class="value" data-bind="text: getValue()"></span>
+        <span class="label" data-bind="text: title"></span>
     </th>
-    <td class="amount" data-bind="attr: {'data-th': title}">
-        <span><span class="price" data-bind="text: getValue()"></span></span>
+    <td class="amount">
+        <span class="price" data-bind="text: getValue(), attr: {'data-th': title}"></span>
     </td>
 </tr>
 <!-- /ko -->

@@ -2,47 +2,56 @@
 
 namespace LoyaltyGroup\LoyaltyPoints\Observer;
 
-use LoyaltyGroup\LoyaltyPoints\Repository\UserRepository;
+use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use Magento\Framework\Exception\NoSuchEntityException;
-use LoyaltyGroup\LoyaltyPoints\Model\CustomerSession;
 use Magento\Customer\Model\Session;
+use Magento\Store\Model\ScopeInterface;
 
 class AfterPlaceOrder implements ObserverInterface
 {
+    /**
+     * @var Session
+     */
     private $session;
-    protected $scopeConfig;
-    protected $repository;
+
+    /**
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
+
+    /**
+     * @var CustomerRepositoryInterface
+     */
+    private $customerRepository;
+
     const XML_PATH_COUNT_LOYALTY = 'loyaltyPoints/general/cashback';
 
     public function __construct(
         Session $session,
         ScopeConfigInterface $scopeConfig,
-        UserRepository $repository
+        CustomerRepositoryInterface $customerRepository
     ) {
         $this->session = $session;
         $this->scopeConfig = $scopeConfig;
-        $this->repository = $repository;
+        $this->customerRepository = $customerRepository;
     }
 
     public function execute(Observer $observer)
     {
         if(!empty($this->session->getReferralId())) {
             $item = $observer->getEvent()->getOrder()->getBaseTotalDue();
-            $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+            $storeScope = ScopeInterface::SCOPE_STORE;
             $percent = $this->scopeConfig->getValue(self::XML_PATH_COUNT_LOYALTY, $storeScope);
             /** @TODO fix round */
-            $point = round($item * $percent / 100);
+            $point = round(($item * $percent / 100), 2);
             $refId = $this->session->getReferralId();
-            $oldPoints = $this->repository->getById($refId)->getPoints();
+            $oldPoints = $this->customerRepository->getById($refId)->getCustomAttribute('loyalty_points')->getValue();
             $newPoints = $oldPoints + $point;
-            $user = $this->repository->getById($refId);
-            $user->setPoints($newPoints);
-            $this->repository->save($user);
+            $user = $this->customerRepository->getById($refId);
+            $user->setCustomAttribute('loyalty_points', $newPoints);
+            $this->customerRepository->save($user);
         }
-        var_dump($this->session->getReferralId());
     }
 }

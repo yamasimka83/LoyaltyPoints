@@ -2,7 +2,19 @@
 /** @var LoyaltyGroup\LoyaltyPoints\Block\LoyaltyPage $block*/
 ?>
 <span> My Referral Link: <strong><?= $block->createReferralLink(); ?></strong></span> <br/>
-<span> My Loyalty Points:  <?= $block->getPointsById(); ?></span><br/>
+<span> My Loyalty Points:  <?= $block->getLoyaltyPoints(); ?></span><br/>
 
-<span> Test: <?php var_dump($block->testCustomerRepository());?></span>
-
+<div class="admin__actions-switch" data-role="switcher">
+    <input type="checkbox"
+           class="admin__actions-switch-checkbox"
+           simple-checked="checked"
+           ko-disabled="disabled"
+           ko-focused="focused"
+           ko-value="value"
+           attr="id: uid, name: inputName"/>
+    <label class="admin__actions-switch-label"
+           attr="for: uid">
+        <span class="admin__actions-switch-text"
+              attr="'data-text-on': toggleLabels.on, 'data-text-off': toggleLabels.off"></span>
+    </label>
+</div>
