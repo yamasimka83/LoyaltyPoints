@@ -57,8 +57,8 @@ class SaveOrderBeforeSalesModelQuoteObserver implements ObserverInterface
             $id = $this->session->getCustomerId();
             $user = $this->customerRepository->getById($id);
 
-            $oldPoints = $user->getCustomAttribute(LoyaltyPointsInterface::CODE);
-            $newPoints =  $oldPoints - $quote->getData(LoyaltyPointsInterface::CODE_AMOUNT);
+            $oldPoints = $user->getCustomAttribute(LoyaltyPointsInterface::CODE)->getValue();
+            $newPoints =  $oldPoints + $quote->getData(LoyaltyPointsInterface::CODE_AMOUNT);
 
             $user->setCustomAttribute(LoyaltyPointsInterface::CODE, $newPoints);
             $this->customerRepository->save($user);
