@@ -7,6 +7,9 @@ use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Sales\Model\Order;
 use Magento\Quote\Model\Quote;
+use Magento\Customer\Model\Session;
+use Magento\Customer\Api\CustomerRepositoryInterface;
+
 
 /**
  * Class SaveOrderBeforeSalesModelQuoteObserver
@@ -14,6 +17,25 @@ use Magento\Quote\Model\Quote;
  */
 class SaveOrderBeforeSalesModelQuoteObserver implements ObserverInterface
 {
+    /**
+     * @var Session
+     */
+    private $session;
+
+    /**
+     * @var CustomerRepositoryInterface
+     */
+    private $customerRepository;
+
+    public function __construct
+    (
+        Session $session,
+        CustomerRepositoryInterface $customerRepository
+    ) {
+        $this->session = $session;
+        $this->customerRepository = $customerRepository;
+    }
+
     /** {@inheritDoc} */
     public function execute(Observer $observer)
     {
@@ -26,6 +48,20 @@ class SaveOrderBeforeSalesModelQuoteObserver implements ObserverInterface
             if ($quote->hasData($code)) {
                 $order->setData($code, $quote->getData($code));
             }
+        }
+        /**
+         * Take points when using them.
+         * @var Quote $quote
+         */
+        if ($quote->hasData(LoyaltyPointsInterface::CODE_AMOUNT)) {
+            $id = $this->session->getCustomerId();
+            $user = $this->customerRepository->getById($id);
+
+            $oldPoints = $user->getCustomAttribute(LoyaltyPointsInterface::CODE);
+            $newPoints =  $oldPoints - $quote->getData(LoyaltyPointsInterface::CODE_AMOUNT);
+
+            $user->setCustomAttribute(LoyaltyPointsInterface::CODE, $newPoints);
+            $this->customerRepository->save($user);
         }
 
         return $this;

@@ -1,8 +1,5 @@
-<!-- ko if: isDisplayed() -->
-<tr class="totals loyalty_points_total excl">
-    <th class="mark" colspan="1" scope="row" data-bind="text: title"></th>
-    <td class="amount">
-        <span class="price" data-bind="text: getValue()"></span>
-    </td>
-</tr>
+<!-- ko if: isDisplayedInfo() -->
+<span data-bind="i18n: 'You have '"></span>
+<strong data-bind="text: getFullValue()"></strong>
+<span data-bind="i18n: ' loyalty points.'"></span>
 <!-- /ko -->

@@ -1,4 +1,5 @@
 <?php
+
 namespace LoyaltyGroup\LoyaltyPoints\Api\Builder;
 
 use Magento\Framework\DataObject;

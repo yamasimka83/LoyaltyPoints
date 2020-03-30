@@ -7,12 +7,18 @@ use Magento\Customer\Model\ResourceModel\Attribute as AttributeResourceModel;
 use Magento\Customer\Setup\CustomerSetupFactory;
 use Magento\Eav\Model\Entity\Attribute\SetFactory as AttributeSetFactory;
 use Magento\Eav\Setup\EavSetupFactory;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
+use Zend_Validate_Exception;
 
+/**
+ * Class LoyaltyPointsAttribute
+ * @package LoyaltyGroup\LoyaltyPoints\Setup\Patch\Data
+ */
 class LoyaltyPointsAttribute implements DataPatchInterface
 {
-    private const REFERRAL_CODE_FIELD_NAME = 'loyalty_points';
+    const CODE_FIELD_NAME = 'loyalty_points';
 
     /**
      * @var ModuleDataSetupInterface
@@ -39,6 +45,14 @@ class LoyaltyPointsAttribute implements DataPatchInterface
      */
     private $attributeResourceModel;
 
+    /**
+     * LoyaltyPointsAttribute constructor.
+     * @param ModuleDataSetupInterface $moduleDataSetup
+     * @param CustomerSetupFactory $customerSetupFactory
+     * @param AttributeSetFactory $attributeSetFactory
+     * @param EavSetupFactory $eavSetupFactory
+     * @param AttributeResourceModel $attributeResourceModel
+     */
     public function __construct(
         ModuleDataSetupInterface $moduleDataSetup,
         CustomerSetupFactory $customerSetupFactory,
@@ -71,12 +85,13 @@ class LoyaltyPointsAttribute implements DataPatchInterface
 
     /**
      * {@inheritdoc}
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
+     * @throws Zend_Validate_Exception
      */
     public function apply()
     {
         $customerSetup = $this->customerSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $customerSetup->removeAttribute(\Magento\Customer\Model\Customer::ENTITY, static::REFERRAL_CODE_FIELD_NAME);
+        $customerSetup->removeAttribute(Customer::ENTITY, self::CODE_FIELD_NAME);
 
         $customerEntity = $customerSetup->getEavConfig()->getEntityType(Customer::ENTITY);
         $attributeSetId = $customerEntity->getDefaultAttributeSetId();
@@ -103,7 +118,7 @@ class LoyaltyPointsAttribute implements DataPatchInterface
         );
 
         $referralCodeAttribute = $customerSetup->getEavConfig()
-            ->getAttribute(Customer::ENTITY, static::REFERRAL_CODE_FIELD_NAME)
+            ->getAttribute(Customer::ENTITY, self::CODE_FIELD_NAME)
             ->addData([
                 'attribute_set_id' => $attributeSetId,
                 'attribute_group_id' => $attributeGroupId,

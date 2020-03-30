@@ -6,7 +6,7 @@ use Magento\Quote\Model\Quote\Address\Total\CollectorInterface;
 use Magento\Quote\Model\Quote\Address\Total\ReaderInterface;
 
 /**
- * Interface CustomTotalInterface
+ * Interface LoyaltyPointsInterface
  * @package LoyaltyGroup\LoyaltyPoints\Api\Model\Total
  */
 interface LoyaltyPointsInterface extends CollectorInterface, ReaderInterface

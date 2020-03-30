@@ -1,7 +1,7 @@
-<!-- ko if: isDisplayed() -->
-<tr class="totals loyalty_points_total excl" data-bind="visible: isVisible">
+<!-- ko if: isDisabledPoints() -->
+<tr class="totals loyalty_points_total excl">
     <th class="mark" scope="row">
-        <span class="label" data-bind="text: title"></span>
+        <span class="label" data-bind="i18n: title"></span>
     </th>
     <td class="amount">
         <span class="price" data-bind="text: getValue(), attr: {'data-th': title}"></span>

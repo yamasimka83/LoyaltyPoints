@@ -12,6 +12,10 @@ use Magento\Customer\Model\Session;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 
+/**
+ * Class LoyaltyPage
+ * @package LoyaltyGroup\LoyaltyPoints\Block
+ */
 class LoyaltyPage extends Template
 {
     /**

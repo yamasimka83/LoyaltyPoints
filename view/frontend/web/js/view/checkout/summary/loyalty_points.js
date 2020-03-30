@@ -4,22 +4,27 @@ define(
         'Magento_Checkout/js/model/quote',
         'Magento_Catalog/js/price-utils',
         'Magento_Checkout/js/model/totals',
-        'ko'
+        'ko',
+        'Magento_Checkout/js/model/error-processor',
+        'jquery',
+        'Magento_Checkout/js/action/get-totals'
     ],
-    function (Component, quote, priceUtils, totals, ko) {
+    function (Component, quote, priceUtils, totals, ko, errorProcessor, $, getTotals) {
         "use strict";
         return Component.extend({
 
             totals: quote.getTotals(),
 
-            isVisible: ko.observable(false),
+            isDisabledPoints: function () {
+                return this.getPureValue() != 0;
+            },
+
+            isDisplayedInfo: function () {
+                return this.getFullValue() != 0;
+            },
 
             title: function () {
                 return totals.getSegment('loyalty_points').title;
-            },
-
-            isDisplayed: function () {
-                return this.getPureValue() != 0;
             },
 
             getValue: function () {
@@ -43,11 +48,39 @@ define(
                 }
                 return price;
             },
-            showPoints: function () {
-                this.isVisible = this.isVisible ? false : true;
-                console.log(this);
-                location.reload();
-                console.log(this);
+            applyLoyaltyPoints: function () {
+                return $.ajax({
+                    url: "http://magento2.loc/customer/totals/collect",
+                    data: {
+                        'isUsePoints': true,
+                        'quoteId': quote.getQuoteId()
+                        },
+                    type: "POST",
+                    dataType: 'json',
+                }).done(function () {
+                    getTotals([], false);
+                }).fail(
+                    function (response) {
+                        errorProcessor.process(response);
+                    }
+                );
+            },
+            unsetLoyaltyPoints: function () {
+                return $.ajax({
+                    url: "http://magento2.loc/customer/totals/collect",
+                    data: {
+                        'isUsePoints': false,
+                        'quoteId': quote.getQuoteId()
+                    },
+                    type: "POST",
+                    dataType: 'json',
+                }).done(function () {
+                    getTotals([], false);
+                }).fail(
+                    function (response) {
+                        errorProcessor.process(response);
+                    }
+                );
             }
         });
     }
