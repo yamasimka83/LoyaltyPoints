@@ -74,7 +74,13 @@ class LoyaltyPage extends Template
     {
         $id = $this->session->getCustomerId();
         $user = $this->customerRepository->getById($id);
-        return $user->getCustomAttribute('loyalty_points')->getValue();
+
+        if(empty($user->getCustomAttribute('loyalty_points'))) {
+            $user->setCustomAttribute('loyalty_points', 0);
+            $this->customerRepository->save($user);
+        }
+
+        return round($user->getCustomAttribute('loyalty_points')->getValue(), 2);
     }
 
     /**

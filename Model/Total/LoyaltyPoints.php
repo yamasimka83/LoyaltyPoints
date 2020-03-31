@@ -11,7 +11,6 @@ use Magento\Quote\Api\Data\ShippingAssignmentInterface;
 use Magento\Quote\Model\Quote\Address\Total;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Model\Session;
-use Magento\Framework\Stdlib\CookieManagerInterface;
 
 
 
@@ -31,29 +30,26 @@ class LoyaltyPoints extends AbstractTotal implements LoyaltyPointsInterface
      */
     private $session;
 
-    /**
-     * @var CookieManagerInterface
-     */
-    private $cookie;
-
-    private static $isUsePoints = false;
-
     public function __construct
     (
         CustomerRepositoryInterface $customerRepository,
-        Session $session,
-        CookieManagerInterface $cookie
+        Session $session
     )
     {
         $this->customerRepository = $customerRepository;
         $this->session = $session;
-        $this->cookie = $cookie;
     }
 
     public function collect(Quote $quote, ShippingAssignmentInterface $shippingAssignment, Total $total)
     {
+        parent::collect($quote, $shippingAssignment, $total);
+
+        $items = $shippingAssignment->getItems();
+        if (empty($items)) {
+            return $this;
+        }
+
         if ($this->session->isLoggedIn()) {
-            parent::collect($quote, $shippingAssignment, $total);
 
             $isUse = !empty($this->session->getIsUse()) ? $this->session->getIsUse() : false;
 
@@ -63,22 +59,26 @@ class LoyaltyPoints extends AbstractTotal implements LoyaltyPointsInterface
                 $allBaseTotalAmounts = array_sum($total->getAllBaseTotalAmounts());
 
                 $user = $this->customerRepository->getById($this->session->getCustomerId());
+
+                if(empty($user->getCustomAttribute('loyalty_points'))) {
+                    $user->setCustomAttribute('loyalty_points', 0);
+                    $this->customerRepository->save($user);
+                }
+
                 $points = $user->getCustomAttribute('loyalty_points')->getValue();
 
-                $totalSale = $points >= $allTotalAmounts ? -($allTotalAmounts - 0.01) : -$points;
-                $totalBaseSale = $points >= $allBaseTotalAmounts ? -($allBaseTotalAmounts - 0.01) : -$points;
+                $totalSale = $points >= $allTotalAmounts ? ($allTotalAmounts - 0.01) : $points;
+                $totalBaseSale = $points >= $allBaseTotalAmounts ? ($allBaseTotalAmounts - 0.01) : $points;
 
-                $total->addTotalAmount($this->getCode(), $totalSale);
-                $total->addBaseTotalAmount($this->getCode(), $totalBaseSale);
-                $total->setCustom($totalSale);
-                $total->setBaseCustom($totalBaseSale);
+                $total->addTotalAmount($this->getCode(), -$totalSale);
+                $total->addBaseTotalAmount($this->getCode(), -$totalBaseSale);
+
                 $quote->setData(self::CODE_AMOUNT, $totalSale);
                 $quote->setData(self::BASE_CODE_AMOUNT, $totalBaseSale);
             } else {
                 $total->setTotalAmount($this->getCode(), 0);
                 $total->setBaseTotalAmount($this->getCode(), 0);
-                $total->setCustom(0);
-                $total->setBaseCustom(0);
+
                 $quote->setData(self::CODE_AMOUNT, 0);
                 $quote->setData(self::BASE_CODE_AMOUNT, 0);
             }
@@ -95,8 +95,14 @@ class LoyaltyPoints extends AbstractTotal implements LoyaltyPointsInterface
      */
     public function fetch(Quote $quote, Total $total)
     {
-        $loyaltyPointAmount = $total->getData(self::CODE_AMOUNT);
-        $loyaltyPointAll = round($this->customerRepository->getById($this->session->getCustomerId())->getCustomAttribute('loyalty_points')->getValue(), 2);
+        $loyaltyPointAll = 0;
+        $loyaltyPointAmount = 0;
+        if($this->session->isLoggedIn()) {
+            $user = $this->customerRepository->getById($this->session->getCustomerId());
+            $loyaltyPointAmount = $total->getData(self::CODE_AMOUNT);
+            $loyaltyPointAll = round($user->getCustomAttribute('loyalty_points')->getValue(), 2);
+
+        }
         return [
             'code' => $this->getCode(),
             'title' => $this->getLabel(),

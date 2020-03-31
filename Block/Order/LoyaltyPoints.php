@@ -7,7 +7,7 @@ use LoyaltyGroup\LoyaltyPoints\Api\Model\Total\LoyaltyPointsInterface;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Context;
 use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Totals;
+use Magento\Sales\Block\Order\Totals;
 
 /**
  * Class LoyaltyPoints

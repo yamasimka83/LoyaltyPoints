@@ -113,7 +113,7 @@ class LoyaltyPointsAttribute implements DataPatchInterface
                 'default' => 0,
                 'user_defined' => true,
                 'system' => 0,
-                'unique' => true,
+                'unique' => false,
             ]
         );
 
