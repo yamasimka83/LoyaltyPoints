@@ -7,6 +7,10 @@ use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 
+/**
+ * Class Loyalty
+ * @package LoyaltyGroup\LoyaltyPoints\Controller\Account
+ */
 class Loyalty extends AbstractAccount
 {
     /**

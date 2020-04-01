@@ -101,7 +101,7 @@ class LoyaltyPointsAttribute implements DataPatchInterface
 
         $customerSetup->addAttribute(
             Customer::ENTITY,
-            static::REFERRAL_CODE_FIELD_NAME,
+            self::CODE_FIELD_NAME,
             [
                 'type' => 'decimal',
                 'label' => 'loyalty_points',
@@ -117,7 +117,7 @@ class LoyaltyPointsAttribute implements DataPatchInterface
             ]
         );
 
-        $referralCodeAttribute = $customerSetup->getEavConfig()
+        $loyaltyPointsCodeAttribute = $customerSetup->getEavConfig()
             ->getAttribute(Customer::ENTITY, self::CODE_FIELD_NAME)
             ->addData([
                 'attribute_set_id' => $attributeSetId,
@@ -125,7 +125,7 @@ class LoyaltyPointsAttribute implements DataPatchInterface
                 'used_in_forms' => ['adminhtml_checkout', 'adminhtml_customer'],
             ]);
 
-        $this->attributeResourceModel->save($referralCodeAttribute);
+        $this->attributeResourceModel->save($loyaltyPointsCodeAttribute);
     }
 
 }

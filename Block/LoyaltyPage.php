@@ -59,7 +59,7 @@ class LoyaltyPage extends Template
     ) {
         $this->encryptor = $encryptor;
         $this->storeManager = $storeManager;
-        $this->$customerSession = $customerSession;
+        $this->customerSession = $customerSession;
         $this->customerRepository = $customerRepository;
         parent::__construct($context, $data);
     }

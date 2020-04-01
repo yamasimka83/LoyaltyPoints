@@ -99,6 +99,10 @@ class Collect extends AbstractTotal implements LoyaltyPointsInterface
         $loyaltyPointAmount = 0;
         if($this->customerSession->isLoggedIn()) {
             $user = $this->customerRepository->getById($this->customerSession->getCustomerId());
+            if(empty($user->getCustomAttribute('loyalty_points'))) {
+                $user->setCustomAttribute('loyalty_points', 0);
+                $this->customerRepository->save($user);
+            }
             $loyaltyPointAmount = $total->getData(self::CODE_AMOUNT);
             $loyaltyPointAll = round($user->getCustomAttribute('loyalty_points')->getValue());
 
