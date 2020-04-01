@@ -3,7 +3,7 @@
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Sales:etc/sales.xsd">
     <section name="quote">
         <group name="totals">
-            <item name="loyalty_points" instance="LoyaltyGroup\LoyaltyPoints\Model\Total\LoyaltyPoints" sort_order="450"/>
+            <item name="loyalty_points" instance="LoyaltyGroup\LoyaltyPoints\Model\Quote\Collect" sort_order="450"/>
         </group>
     </section>
 </config>

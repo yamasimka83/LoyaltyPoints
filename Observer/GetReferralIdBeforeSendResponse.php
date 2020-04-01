@@ -8,10 +8,10 @@ use Magento\Customer\Model\Session;
 use Magento\Framework\Encryption\EncryptorInterface;
 
 /**
- * Class BeforeSendResponse
+ * Class GetReferralIdBeforeSendResponse
  * @package LoyaltyGroup\LoyaltyPoints\Observer
  */
-class BeforeSendResponse implements ObserverInterface
+class GetReferralIdBeforeSendResponse implements ObserverInterface
 {
     /**
      * @var Session

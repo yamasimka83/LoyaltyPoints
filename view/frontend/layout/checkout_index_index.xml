@@ -17,7 +17,6 @@
                                                             <item name="component" xsi:type="string">LoyaltyGroup_LoyaltyPoints/js/view/checkout/summary/loyalty_points</item>
                                                             <item name="sortOrder" xsi:type="string">40</item>
                                                             <item name="config" xsi:type="array">
-<!--                                                                <item name="title" xsi:type="string" translate="true">Loyalty Points</item>-->
                                                                 <item name="template" xsi:type="string">LoyaltyGroup_LoyaltyPoints/checkout/summary/loyalty_points</item>
                                                             </item>
                                                         </item>
@@ -30,9 +29,7 @@
                                                             <item name="component" xsi:type="string">LoyaltyGroup_LoyaltyPoints/js/view/checkout/summary/loyalty_points</item>
                                                             <item name="sortOrder" xsi:type="string">20</item>
                                                             <item name="config" xsi:type="array">
-                                                                <item name="template" xsi:type="string">
-                                                                    LoyaltyGroup_LoyaltyPoints/checkout/summary/loyalty_points_buttons.html
-                                                                </item>
+                                                                <item name="template" xsi:type="string">LoyaltyGroup_LoyaltyPoints/checkout/summary/loyalty_points_buttons.html</item>
                                                             </item>
                                                         </item>
                                                     </item>

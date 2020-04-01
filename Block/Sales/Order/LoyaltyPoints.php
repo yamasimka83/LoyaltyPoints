@@ -3,7 +3,7 @@
 namespace LoyaltyGroup\LoyaltyPoints\Block\Sales\Order;
 
 use LoyaltyGroup\LoyaltyPoints\Api\Builder\LoyaltyPointsBuilderInterface;
-use LoyaltyGroup\LoyaltyPoints\Api\Model\Total\LoyaltyPointsInterface;
+use LoyaltyGroup\LoyaltyPoints\Api\Model\Quote\LoyaltyPointsInterface;
 use Magento\Framework\DataObject;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;

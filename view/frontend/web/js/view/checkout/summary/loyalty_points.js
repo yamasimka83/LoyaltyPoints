@@ -4,18 +4,17 @@ define(
         'Magento_Checkout/js/model/quote',
         'Magento_Catalog/js/price-utils',
         'Magento_Checkout/js/model/totals',
-        'ko',
         'Magento_Checkout/js/model/error-processor',
         'jquery',
         'Magento_Checkout/js/action/get-totals'
     ],
-    function (Component, quote, priceUtils, totals, ko, errorProcessor, $, getTotals) {
+    function (Component, quote, priceUtils, totals, errorProcessor, $, getTotals) {
         "use strict";
         return Component.extend({
 
             totals: quote.getTotals(),
 
-            isDisabledPoints: function () {
+            isDisplayedPoints: function () {
                 return this.getPureValue() != 0;
             },
 

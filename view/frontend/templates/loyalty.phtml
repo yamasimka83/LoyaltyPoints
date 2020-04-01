@@ -1,6 +1,6 @@
 <?php
 /** @var LoyaltyGroup\LoyaltyPoints\Block\LoyaltyPage $block*/
 ?>
-<span> <?=__('My Referral Link')?>: <strong><?= $block->createReferralLink(); ?></strong></span> <br/>
-<span> <?=__('My Loyalty Points')?>:  <?= $block->getLoyaltyPoints(); ?></span><br/>
+<span> <?=__('My Referral Link')?>: <strong><?= /* @noEscape */ $block->createReferralLink(); ?></strong></span> <br/>
+<span> <?=__('My Loyalty Points')?>:  <?= /* @noEscape */ $block->getLoyaltyPoints(); ?></span><br/>
 

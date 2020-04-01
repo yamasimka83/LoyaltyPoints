@@ -4,7 +4,7 @@
     <default>
         <loyaltyPoints>
             <general>
-                <cashback>0</cashback>
+                <loyalty_points_percent>0</loyalty_points_percent>
             </general>
         </loyaltyPoints>
     </default>

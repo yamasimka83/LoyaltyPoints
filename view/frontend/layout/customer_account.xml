@@ -2,10 +2,10 @@
     <body>
         <referenceBlock name="customer_account_navigation">
             <block class="Magento\Customer\Block\Account\SortLinkInterface"
-                   name="customer-account-navigation-custom">
+                   name="customer-account-navigation-loyalty">
                 <arguments>
-                    <argument name="path" xsi:type="string">customer/customer/loyalty</argument>
-                    <argument name="label" xsi:type="string" translate="true">Loyalty Points</argument>
+                    <argument name="path" xsi:type="string">customer/account/loyalty</argument>
+                    <argument name="label" xsi:type="string" translate="true">Loyalty Program</argument>
                     <argument name="sortOrder" xsi:type="number">54</argument>
                 </arguments>
             </block>

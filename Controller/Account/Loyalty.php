@@ -1,6 +1,6 @@
 <?php
 
-namespace LoyaltyGroup\LoyaltyPoints\Controller\Customer;
+namespace LoyaltyGroup\LoyaltyPoints\Controller\Account;
 
 use Magento\Customer\Controller\AbstractAccount;
 use Magento\Framework\App\ResponseInterface;

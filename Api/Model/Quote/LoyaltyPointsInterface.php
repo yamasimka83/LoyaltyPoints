@@ -1,13 +1,13 @@
 <?php
 
-namespace LoyaltyGroup\LoyaltyPoints\Api\Model\Total;
+namespace LoyaltyGroup\LoyaltyPoints\Api\Model\Quote;
 
 use Magento\Quote\Model\Quote\Address\Total\CollectorInterface;
 use Magento\Quote\Model\Quote\Address\Total\ReaderInterface;
 
 /**
  * Interface LoyaltyPointsInterface
- * @package LoyaltyGroup\LoyaltyPoints\Api\Model\Total
+ * @package LoyaltyGroup\LoyaltyPoints\Api\Model\Quote
  */
 interface LoyaltyPointsInterface extends CollectorInterface, ReaderInterface
 {

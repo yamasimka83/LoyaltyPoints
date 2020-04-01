@@ -2,7 +2,7 @@
 
 namespace LoyaltyGroup\LoyaltyPoints\Observer;
 
-use LoyaltyGroup\LoyaltyPoints\Api\Model\Total\LoyaltyPointsInterface;
+use LoyaltyGroup\LoyaltyPoints\Api\Model\Quote\LoyaltyPointsInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Event\Observer;
@@ -16,10 +16,10 @@ use Magento\Store\Model\ScopeInterface;
 use Magento\Quote\Model\Quote;
 
 /**
- * Class AfterPlaceOrder
+ * Class AddLoyaltyPointsAfterPlaceOrder
  * @package LoyaltyGroup\LoyaltyPoints\Observer
  */
-class AfterPlaceOrder implements ObserverInterface
+class AddLoyaltyPointsAfterPlaceOrder implements ObserverInterface
 {
     /**
      * @var Session
@@ -45,7 +45,7 @@ class AfterPlaceOrder implements ObserverInterface
      * @+
      * @const string
      */
-    const XML_PATH_COUNT_LOYALTY = 'loyaltyPoints/general/cashback';
+    const XML_PATH_COUNT_LOYALTY = 'loyaltyPoints/general/loyalty_points_percent';
 
     /**
      * AfterPlaceOrder constructor.
@@ -68,7 +68,6 @@ class AfterPlaceOrder implements ObserverInterface
 
     /**
      * Adds points to the referral.
-     * Take points when using them.
      *
      * @param Observer $observer
      * @throws InputException

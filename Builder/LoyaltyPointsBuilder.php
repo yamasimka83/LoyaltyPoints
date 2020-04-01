@@ -1,4 +1,5 @@
 <?php
+
 namespace LoyaltyGroup\LoyaltyPoints\Builder;
 
 use LoyaltyGroup\LoyaltyPoints\Api\Builder\LoyaltyPointsBuilderInterface;

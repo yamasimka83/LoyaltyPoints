@@ -1,8 +1,8 @@
 <?php
 
-namespace LoyaltyGroup\LoyaltyPoints\Model\Total;
+namespace LoyaltyGroup\LoyaltyPoints\Model\Quote;
 
-use LoyaltyGroup\LoyaltyPoints\Api\Model\Total\LoyaltyPointsInterface;
+use LoyaltyGroup\LoyaltyPoints\Api\Model\Quote\LoyaltyPointsInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Quote\Model\Quote\Address\Total\AbstractTotal;
@@ -10,15 +10,15 @@ use Magento\Quote\Model\Quote;
 use Magento\Quote\Api\Data\ShippingAssignmentInterface;
 use Magento\Quote\Model\Quote\Address\Total;
 use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Customer\Model\Session;
+use Magento\Customer\Model\Session as CustomerSession;
 
 
 
 /**
  * Class LoyaltyPoints
- * @package LoyaltyGroup\LoyaltyPoints\Model\Total
+ * @package LoyaltyGroup\LoyaltyPoints\Model\Quote
  */
-class LoyaltyPoints extends AbstractTotal implements LoyaltyPointsInterface
+class Collect extends AbstractTotal implements LoyaltyPointsInterface
 {
     /**
      * @var CustomerRepositoryInterface
@@ -26,18 +26,18 @@ class LoyaltyPoints extends AbstractTotal implements LoyaltyPointsInterface
     private $customerRepository;
 
     /**
-     * @var Session
+     * @var CustomerSession
      */
-    private $session;
+    private $customerSession;
 
     public function __construct
     (
         CustomerRepositoryInterface $customerRepository,
-        Session $session
+        CustomerSession $customerSession
     )
     {
         $this->customerRepository = $customerRepository;
-        $this->session = $session;
+        $this->customerSession = $customerSession;
     }
 
     public function collect(Quote $quote, ShippingAssignmentInterface $shippingAssignment, Total $total)
@@ -49,16 +49,16 @@ class LoyaltyPoints extends AbstractTotal implements LoyaltyPointsInterface
             return $this;
         }
 
-        if ($this->session->isLoggedIn()) {
+        if ($this->customerSession->isLoggedIn()) {
 
-            $isUse = !empty($this->session->getIsUse()) ? $this->session->getIsUse() : false;
+            $isUse = !empty($this->customerSession->getIsUse()) ? $this->customerSession->getIsUse() : false;
 
             if ($isUse == 'true') {
 
                 $allTotalAmounts = array_sum($total->getAllTotalAmounts());
                 $allBaseTotalAmounts = array_sum($total->getAllBaseTotalAmounts());
 
-                $user = $this->customerRepository->getById($this->session->getCustomerId());
+                $user = $this->customerRepository->getById($this->customerSession->getCustomerId());
 
                 if(empty($user->getCustomAttribute('loyalty_points'))) {
                     $user->setCustomAttribute('loyalty_points', 0);
@@ -97,8 +97,8 @@ class LoyaltyPoints extends AbstractTotal implements LoyaltyPointsInterface
     {
         $loyaltyPointAll = 0;
         $loyaltyPointAmount = 0;
-        if($this->session->isLoggedIn()) {
-            $user = $this->customerRepository->getById($this->session->getCustomerId());
+        if($this->customerSession->isLoggedIn()) {
+            $user = $this->customerRepository->getById($this->customerSession->getCustomerId());
             $loyaltyPointAmount = $total->getData(self::CODE_AMOUNT);
             $loyaltyPointAll = round($user->getCustomAttribute('loyalty_points')->getValue(), 2);
 

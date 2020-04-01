@@ -2,7 +2,7 @@
 
 namespace LoyaltyGroup\LoyaltyPoints\Observer;
 
-use LoyaltyGroup\LoyaltyPoints\Api\Model\Total\LoyaltyPointsInterface;
+use LoyaltyGroup\LoyaltyPoints\Api\Model\Quote\LoyaltyPointsInterface;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Sales\Model\Order;
@@ -12,10 +12,10 @@ use Magento\Customer\Api\CustomerRepositoryInterface;
 
 
 /**
- * Class SaveOrderBeforeSalesModelQuoteObserver
+ * Class WriteOffPointsAndSaveOrderBeforeSalesModelQuote
  * @package LoyaltyGroup\LoyaltyPoints\Observer
  */
-class SaveOrderBeforeSalesModelQuoteObserver implements ObserverInterface
+class WriteOffPointsAndSaveOrderBeforeSalesModelQuote implements ObserverInterface
 {
     /**
      * @var Session
@@ -44,14 +44,16 @@ class SaveOrderBeforeSalesModelQuoteObserver implements ObserverInterface
         /* @var Quote $quote */
         $quote = $observer->getEvent()->getData('quote');
 
+        /**
+         * Save order.
+         */
         foreach ([LoyaltyPointsInterface::CODE_AMOUNT, LoyaltyPointsInterface::BASE_CODE_AMOUNT] as $code) {
             if ($quote->hasData($code)) {
                 $order->setData($code, $quote->getData($code));
             }
         }
         /**
-         * Take points when using them.
-         * @var Quote $quote
+         * Write-off points when using them.
          */
         if ($this->session->isLoggedIn() && $quote->hasData(LoyaltyPointsInterface::CODE_AMOUNT)) {
             $id = $this->session->getCustomerId();

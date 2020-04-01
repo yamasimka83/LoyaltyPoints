@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
     <event name="checkout_onepage_controller_success_action">
-        <observer name="myModule_checkout_onepage_controller_success_action"
-                  instance="LoyaltyGroup\LoyaltyPoints\Observer\AfterPlaceOrder" />
+        <observer name="loyalty_points_checkout_onepage_controller_success_action"
+                  instance="LoyaltyGroup\LoyaltyPoints\Observer\AddLoyaltyPointsAfterPlaceOrder" />
     </event>
     <event name="controller_front_send_response_before">
-        <observer name="myModule_controller_front_send_response_before"
-                  instance="LoyaltyGroup\LoyaltyPoints\Observer\BeforeSendResponse" />
+        <observer name="loyalty_points_controller_front_send_response_before"
+                  instance="LoyaltyGroup\LoyaltyPoints\Observer\GetReferralIdBeforeSendResponse" />
     </event>
     <event name="sales_model_service_quote_submit_before">
         <observer name="loyalty_points_sales_model_service_quote_submit_before"
-                  instance="LoyaltyGroup\LoyaltyPoints\Observer\SaveOrderBeforeSalesModelQuoteObserver" />
+                  instance="LoyaltyGroup\LoyaltyPoints\Observer\WriteOffPointsAndSaveOrderBeforeSalesModelQuote" />
     </event>
 </config>

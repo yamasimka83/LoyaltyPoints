@@ -8,7 +8,7 @@ use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Framework\Encryption\EncryptorInterface;
-use Magento\Customer\Model\Session;
+use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 
@@ -19,9 +19,9 @@ use Magento\Customer\Api\CustomerRepositoryInterface;
 class LoyaltyPage extends Template
 {
     /**
-     * @var Session
+     * @var CustomerSession
      */
-    private $session;
+    private $customerSession;
 
     /**
      * @var EncryptorInterface
@@ -42,7 +42,7 @@ class LoyaltyPage extends Template
      * LoyaltyPage constructor.
      *
      * @param EncryptorInterface $encryptor
-     * @param Session $session
+     * @param CustomerSession $customerSession
      * @param Context $context
      * @param StoreManagerInterface $storeManager
      * @param CustomerRepositoryInterface $customerRepository
@@ -50,7 +50,7 @@ class LoyaltyPage extends Template
      */
     public function __construct(
         EncryptorInterface $encryptor,
-        Session $session,
+        CustomerSession $customerSession,
         Context $context,
         StoreManagerInterface $storeManager,
         CustomerRepositoryInterface $customerRepository,
@@ -58,7 +58,7 @@ class LoyaltyPage extends Template
     ) {
         $this->encryptor = $encryptor;
         $this->storeManager = $storeManager;
-        $this->session = $session;
+        $this->$customerSession = $customerSession;
         $this->customerRepository = $customerRepository;
         parent::__construct($context, $data);
     }
@@ -66,13 +66,13 @@ class LoyaltyPage extends Template
     /**
      * Get loyalty points by user id.
      *
-     * @return mixed
+     * @return int
      * @throws NoSuchEntityException
      * @throws LocalizedException
      */
-    public function getLoyaltyPoints()
+    public function getLoyaltyPoints() : int
     {
-        $id = $this->session->getCustomerId();
+        $id = $this->customerSession->getCustomerId();
         $user = $this->customerRepository->getById($id);
 
         if(empty($user->getCustomAttribute('loyalty_points'))) {
@@ -89,10 +89,10 @@ class LoyaltyPage extends Template
      * @return string
      * @throws NoSuchEntityException
      */
-    public function createReferralLink()
+    public function createReferralLink() : string
     {
         $url = $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_WEB);
-        $encrypt = urlencode($this->encryptor->encrypt($this->session->getCustomerId()));
+        $encrypt = urlencode($this->encryptor->encrypt($this->customerSession->getCustomerId()));
         $link = $url . "?ref=" . $encrypt;
         return $link;
     }

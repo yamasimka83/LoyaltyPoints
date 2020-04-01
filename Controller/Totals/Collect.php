@@ -7,7 +7,7 @@ use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\NotFoundException;
-use Magento\Customer\Model\Session;
+use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Quote\Api\CartRepositoryInterface;
 
 /**
@@ -22,9 +22,9 @@ class Collect extends Action
     protected $resultJsonFactory;
 
     /**
-     * @var Session
+     * @var CustomerSession
      */
-    private $session;
+    private $customerSession;
 
     /**
      * @var CartRepositoryInterface
@@ -36,19 +36,19 @@ class Collect extends Action
      *
      * @param Context $context
      * @param JsonFactory $resultJsonFactory
-     * @param Session $session
+     * @param CustomerSession $customerSession
      * @param CartRepositoryInterface $cartRepository
      */
     public function __construct(
         Context $context,
         JsonFactory $resultJsonFactory,
-        Session $session,
+        CustomerSession $customerSession,
         CartRepositoryInterface $cartRepository
     ) {
         parent::__construct($context);
 
         $this->resultJsonFactory = $resultJsonFactory;
-        $this->session = $session;
+        $this->customerSession = $customerSession;
         $this->cartRepository = $cartRepository;
     }
 
@@ -64,9 +64,9 @@ class Collect extends Action
         try {
             $this->_validateRequest();
             $isUse = $this->getRequest()->getParam('isUsePoints');
-            $this->session->setIsUse($isUse);
+            $this->customerSession->setIsUse($isUse);
             $quoteId = $this->getRequest()->getParam('quoteId');
-            $this->session->setQuoteIdCheck($quoteId);
+            $this->customerSession->setQuoteIdCheck($quoteId);
             $quote = $this->cartRepository->get($quoteId);
             $quote->collectTotals()->save();
             $result->setData($isUse);
