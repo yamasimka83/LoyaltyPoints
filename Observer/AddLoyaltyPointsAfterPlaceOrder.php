@@ -94,7 +94,7 @@ class AddLoyaltyPointsAfterPlaceOrder implements ObserverInterface
             $user = $this->customerRepository->getById($referralId);
 
             $oldPoints = $this->customerRepository->getById($referralId)->getCustomAttribute(LoyaltyPointsInterface::CODE)->getValue();
-            $newPoints = $oldPoints + round(($item * $percent / 100), 2);
+            $newPoints = $oldPoints + round(($item * $percent / 100));
 
             $user->setCustomAttribute(LoyaltyPointsInterface::CODE, $newPoints);
             $this->customerRepository->save($user);

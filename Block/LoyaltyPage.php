@@ -2,6 +2,7 @@
 
 namespace LoyaltyGroup\LoyaltyPoints\Block;
 
+use LoyaltyGroup\LoyaltyPoints\Api\Model\Quote\LoyaltyPointsInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\UrlInterface;
@@ -75,12 +76,12 @@ class LoyaltyPage extends Template
         $id = $this->customerSession->getCustomerId();
         $user = $this->customerRepository->getById($id);
 
-        if(empty($user->getCustomAttribute('loyalty_points'))) {
-            $user->setCustomAttribute('loyalty_points', 0);
+        if(empty($user->getCustomAttribute(LoyaltyPointsInterface::CODE))) {
+            $user->setCustomAttribute(LoyaltyPointsInterface::CODE, 0);
             $this->customerRepository->save($user);
         }
 
-        return round($user->getCustomAttribute('loyalty_points')->getValue(), 2);
+        return round($user->getCustomAttribute(LoyaltyPointsInterface::CODE)->getValue());
     }
 
     /**
