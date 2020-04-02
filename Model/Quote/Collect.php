@@ -67,11 +67,11 @@ class Collect extends AbstractTotal implements LoyaltyPointsInterface
 
                 $points = $user->getCustomAttribute('loyalty_points')->getValue();
 
-                $totalSale = $points >= $allTotalAmounts ? ($allTotalAmounts - 0.01) : $points;
-                $totalBaseSale = $points >= $allBaseTotalAmounts ? ($allBaseTotalAmounts - 0.01) : $points;
+                $totalSale = -($points >= $allTotalAmounts ? ($allTotalAmounts - 0.01) : $points);
+                $totalBaseSale = -($points >= $allBaseTotalAmounts ? -($allBaseTotalAmounts - 0.01) : -$points);
 
-                $total->addTotalAmount($this->getCode(), -$totalSale);
-                $total->addBaseTotalAmount($this->getCode(), -$totalBaseSale);
+                $total->addTotalAmount($this->getCode(), $totalSale);
+                $total->addBaseTotalAmount($this->getCode(), $totalBaseSale);
 
                 $quote->setData(self::CODE_AMOUNT, $totalSale);
                 $quote->setData(self::BASE_CODE_AMOUNT, $totalBaseSale);

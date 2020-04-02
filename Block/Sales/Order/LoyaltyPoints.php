@@ -62,10 +62,10 @@ class LoyaltyPoints extends Template
     private function getLoyaltyPointsData($total, $baseTotal) : DataObject
     {
         return $this->builder
-                    ->setCode(LoyaltyPointsInterface::CODE)
-                    ->setValue($total)
-                    ->setBaseValue($baseTotal)
-                    ->setLabel(LoyaltyPointsInterface::LABEL)
-                    ->build();
+            ->setCode(LoyaltyPointsInterface::CODE)
+            ->setValue($total)
+            ->setBaseValue($baseTotal)
+            ->setLabel(LoyaltyPointsInterface::LABEL)
+            ->build();
     }
 }
