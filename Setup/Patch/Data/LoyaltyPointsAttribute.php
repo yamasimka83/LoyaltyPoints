@@ -114,6 +114,9 @@ class LoyaltyPointsAttribute implements DataPatchInterface
                 'user_defined' => true,
                 'system' => 0,
                 'unique' => false,
+                'is_used_in_grid' => true,
+                'is_visible_in_grid' => true,
+                'is_filterable_in_grid' => true,
             ]
         );
 
