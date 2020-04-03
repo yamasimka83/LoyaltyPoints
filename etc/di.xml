@@ -3,4 +3,13 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="LoyaltyGroup\LoyaltyPoints\Api\Builder\LoyaltyPointsBuilderInterface"
                 type="LoyaltyGroup\LoyaltyPoints\Builder\LoyaltyPointsBuilder" />
+
+    <!-- Sync the column "my_column" between the sales_order and sales_order_grid tables -->
+    <virtualType name="Magento\Sales\Model\ResourceModel\Order\Grid" type="Magento\Sales\Model\ResourceModel\Grid">
+        <arguments>
+            <argument name="columns" xsi:type="array">
+                <item name="loyalty_points_amount" xsi:type="string">sales_order.loyalty_points_amount</item>
+            </argument>
+        </arguments>
+    </virtualType>
 </config>
