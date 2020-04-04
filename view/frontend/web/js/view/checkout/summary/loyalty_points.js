@@ -38,7 +38,6 @@ define(
                 if (this.totals()) {
                     price = totals.getSegment('loyalty_points').value[0];
                 }
-                console.log(price);
                 return price;
             },
             getFullValue: function () {
@@ -50,7 +49,7 @@ define(
             },
             applyLoyaltyPoints: function () {
                 return $.ajax({
-                    url: "http://magento2.loc/customer/totals/collect",
+                    url: window.checkoutConfig.collectTotalsPath,
                     data: {
                         'isUsePoints': true,
                         'quoteId': quote.getQuoteId()
@@ -67,7 +66,7 @@ define(
             },
             unsetLoyaltyPoints: function () {
                 return $.ajax({
-                    url: "http://magento2.loc/customer/totals/collect",
+                    url: window.checkoutConfig.collectTotalsPath,
                     data: {
                         'isUsePoints': false,
                         'quoteId': quote.getQuoteId()
