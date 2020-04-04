@@ -60,15 +60,15 @@ class Collect extends AbstractTotal implements LoyaltyPointsInterface
 
                 $user = $this->customerRepository->getById($this->customerSession->getCustomerId());
 
-                if(empty($user->getCustomAttribute('loyalty_points'))) {
-                    $user->setCustomAttribute('loyalty_points', 0);
+                if(empty($user->getCustomAttribute(self::CODE))) {
+                    $user->setCustomAttribute(self::CODE, 0);
                     $this->customerRepository->save($user);
                 }
 
-                $points = $user->getCustomAttribute('loyalty_points')->getValue();
+                $points = round($user->getCustomAttribute(self::CODE)->getValue());
 
                 $totalSale = -($points >= $allTotalAmounts ? ($allTotalAmounts - 0.01) : $points);
-                $totalBaseSale = -($points >= $allBaseTotalAmounts ? -($allBaseTotalAmounts - 0.01) : -$points);
+                $totalBaseSale = -($points >= $allBaseTotalAmounts ? ($allBaseTotalAmounts - 0.01) : $points);
 
                 $total->addTotalAmount($this->getCode(), $totalSale);
                 $total->addBaseTotalAmount($this->getCode(), $totalBaseSale);
@@ -99,12 +99,12 @@ class Collect extends AbstractTotal implements LoyaltyPointsInterface
         $loyaltyPointAmount = 0;
         if($this->customerSession->isLoggedIn()) {
             $user = $this->customerRepository->getById($this->customerSession->getCustomerId());
-            if(empty($user->getCustomAttribute('loyalty_points'))) {
-                $user->setCustomAttribute('loyalty_points', 0);
+            if(empty($user->getCustomAttribute(self::CODE))) {
+                $user->setCustomAttribute(self::CODE, 0);
                 $this->customerRepository->save($user);
             }
-            $loyaltyPointAmount = $total->getData(self::CODE_AMOUNT);
-            $loyaltyPointAll = round($user->getCustomAttribute('loyalty_points')->getValue());
+            $loyaltyPointAmount = round($total->getData(self::CODE_AMOUNT));
+            $loyaltyPointAll = round($user->getCustomAttribute(self::CODE)->getValue());
 
         }
         return [

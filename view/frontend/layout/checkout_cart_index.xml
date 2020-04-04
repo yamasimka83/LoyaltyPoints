@@ -8,6 +8,14 @@
                         <item name="block-totals" xsi:type="array">
                             <item name="children" xsi:type="array">
                                 <item name="loyalty_points" xsi:type="array">
+                                    <item name="component" xsi:type="string">LoyaltyGroup_LoyaltyPoints/js/view/checkout/summary/loyalty_points</item>
+                                    <item name="sortOrder" xsi:type="string">20</item>
+                                    <item name="config" xsi:type="array">
+                                        <item name="template" xsi:type="string">LoyaltyGroup_LoyaltyPoints/checkout/summary/loyalty_points</item>
+                                        <item name="title" xsi:type="string">Loyalty Points</item>
+                                    </item>
+                                </item>
+                                <item name="loyalty_points_check" xsi:type="array">
                                     <item name="component"  xsi:type="string">LoyaltyGroup_LoyaltyPoints/js/view/checkout/summary/loyalty_points</item>
                                     <item name="sortOrder" xsi:type="string">9999</item>
                                     <item name="config" xsi:type="array">

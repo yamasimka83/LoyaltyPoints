@@ -38,6 +38,7 @@ define(
                 if (this.totals()) {
                     price = totals.getSegment('loyalty_points').value[0];
                 }
+                console.log(price);
                 return price;
             },
             getFullValue: function () {
