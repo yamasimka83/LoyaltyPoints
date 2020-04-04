@@ -48,7 +48,7 @@ class LoyaltyPoints extends Template
                 $source->getData(LoyaltyPointsInterface::BASE_CODE_AMOUNT)
             );
 
-            $parent->addTotal($loyaltyPointsData, 'subtotal');
+            $parent->addTotal($loyaltyPointsData, 'total');
         }
 
         return $this;
