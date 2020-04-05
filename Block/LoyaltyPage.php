@@ -3,6 +3,7 @@
 namespace LoyaltyGroup\LoyaltyPoints\Block;
 
 use LoyaltyGroup\LoyaltyPoints\Api\Model\Quote\LoyaltyPointsInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\UrlInterface;
@@ -10,6 +11,7 @@ use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 
@@ -35,9 +37,17 @@ class LoyaltyPage extends Template
     private $storeManager;
 
     /**
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
+
+    /**
      * @var CustomerRepositoryInterface
      */
     private $customerRepository;
+
+    const XML_PATH_COUNT_LOYALTY = 'loyaltyPoints/general/loyalty_points_percent';
+
 
     /**
      * LoyaltyPage constructor.
@@ -46,6 +56,7 @@ class LoyaltyPage extends Template
      * @param CustomerSession $customerSession
      * @param Context $context
      * @param StoreManagerInterface $storeManager
+     * @param ScopeConfigInterface $scopeConfig
      * @param CustomerRepositoryInterface $customerRepository
      * @param array $data
      */
@@ -54,12 +65,14 @@ class LoyaltyPage extends Template
         CustomerSession $customerSession,
         Context $context,
         StoreManagerInterface $storeManager,
+        ScopeConfigInterface $scopeConfig,
         CustomerRepositoryInterface $customerRepository,
         array $data = []
     ) {
         $this->encryptor = $encryptor;
         $this->storeManager = $storeManager;
         $this->customerSession = $customerSession;
+        $this->scopeConfig = $scopeConfig;
         $this->customerRepository = $customerRepository;
         parent::__construct($context, $data);
     }
@@ -96,5 +109,19 @@ class LoyaltyPage extends Template
         $encrypt = urlencode($this->encryptor->encrypt($this->customerSession->getCustomerId()));
         $link = $url . "?ref=" . $encrypt;
         return $link;
+    }
+
+    /**
+     * Get percent from config.
+     * @return int
+     */
+    public function getPercent() : int
+    {
+        $percent = $this->scopeConfig->getValue
+        (
+            self::XML_PATH_COUNT_LOYALTY,
+            ScopeInterface::SCOPE_STORE
+        );
+        return $percent;
     }
 }

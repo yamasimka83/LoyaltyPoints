@@ -3,7 +3,7 @@
     <body>
         <referenceBlock name="page.main.title">
             <action method="setPageTitle">
-                <argument translate="true" name="title" xsi:type="string">My Loyalty Points</argument>
+                <argument translate="true" name="title" xsi:type="string">Loyalty Points</argument>
             </action>
         </referenceBlock>
         <referenceContainer name="content">

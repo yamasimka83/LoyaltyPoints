@@ -1,6 +1,31 @@
 <?php
 /** @var LoyaltyGroup\LoyaltyPoints\Block\LoyaltyPage $block*/
 ?>
-<span> <?=__('My Referral Link')?>: <strong><?= /* @noEscape */ $block->createReferralLink(); ?></strong></span> <br/>
-<span> <?=__('My Loyalty Points')?>:  <?= /* @noEscape */ $block->getLoyaltyPoints(); ?></span><br/>
 
+<p><?= __('Now you have');?>
+    <strong><?= /* @noEscape */ $block->getLoyaltyPoints(); ?></strong>
+    <?= __('points!');?>
+</p>
+<p><?= __('You can spend them on purchases in our store at a one-to-one rate!');?></p>
+<p><?= __('To get more points, send this link to your friends, when they click on the link and place an order
+    you will receive points in the amount of');?>
+    <strong><?= /* @noEscape */ $block->getPercent();?>%</strong>
+    <?= __('of their order.');?>
+</p>
+<p><?= __('Yor referral link:');?> <br> </p>
+
+<input
+    id="refLink"
+    type="text"
+    value="<?= /* @noEscape */ $block->createReferralLink(); ?>"
+    readonly
+>
+<button onclick="copyLink()">Copy link</button>
+<script>
+    function copyLink() {
+        let copyText = document.getElementById("refLink");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999)
+        document.execCommand("copy");
+    }
+</script>
