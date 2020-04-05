@@ -18,6 +18,16 @@
                     <label>Enter the percentage of Loyalty Points</label>
                     <comment></comment>
                 </field>
+                <field id="loyalty_points_minimum_total"
+                       translate="label"
+                       type="text"
+                       sortOrder="1"
+                       showInDefault="1"
+                       showInWebsite="0"
+                       showInStore="0">
+                    <label>Enter the minimum of total sum</label>
+                    <comment></comment>
+                </field>
             </group>
         </section>
     </system>

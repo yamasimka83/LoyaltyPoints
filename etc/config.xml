@@ -5,6 +5,7 @@
         <loyaltyPoints>
             <general>
                 <loyalty_points_percent>0</loyalty_points_percent>
+                <loyalty_points_minimum_total>0.01</loyalty_points_minimum_total>
             </general>
         </loyaltyPoints>
     </default>

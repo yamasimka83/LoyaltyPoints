@@ -3,6 +3,7 @@
 namespace LoyaltyGroup\LoyaltyPoints\Model\Quote;
 
 use LoyaltyGroup\LoyaltyPoints\Api\Model\Quote\LoyaltyPointsInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Quote\Model\Quote\Address\Total\AbstractTotal;
@@ -11,7 +12,7 @@ use Magento\Quote\Api\Data\ShippingAssignmentInterface;
 use Magento\Quote\Model\Quote\Address\Total;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Model\Session as CustomerSession;
-
+use Magento\Store\Model\ScopeInterface;
 
 
 /**
@@ -30,14 +31,27 @@ class Collect extends AbstractTotal implements LoyaltyPointsInterface
      */
     private $customerSession;
 
+    /**
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
+
+    /**
+     * @+
+     * @const string
+     */
+    const XML_PATH_MIN_TOTAL = 'loyaltyPoints/general/loyalty_points_minimum_total';
+
     public function __construct
     (
         CustomerRepositoryInterface $customerRepository,
-        CustomerSession $customerSession
+        CustomerSession $customerSession,
+        ScopeConfigInterface $scopeConfig
     )
     {
         $this->customerRepository = $customerRepository;
         $this->customerSession = $customerSession;
+        $this->scopeConfig = $scopeConfig;
     }
 
     public function collect(Quote $quote, ShippingAssignmentInterface $shippingAssignment, Total $total)
@@ -67,8 +81,14 @@ class Collect extends AbstractTotal implements LoyaltyPointsInterface
 
                 $points = round($user->getCustomAttribute(self::CODE)->getValue());
 
-                $totalSale = -($points >= $allTotalAmounts ? ($allTotalAmounts - 0.01) : $points);
-                $totalBaseSale = -($points >= $allBaseTotalAmounts ? ($allBaseTotalAmounts - 0.01) : $points);
+                $minimumTotal = $this->scopeConfig->getValue
+                (
+                    self::XML_PATH_MIN_TOTAL,
+                    ScopeInterface::SCOPE_STORE
+                );
+
+                $totalSale = -($points >= $allTotalAmounts ? ($allTotalAmounts - $minimumTotal) : $points);
+                $totalBaseSale = -($points >= $allBaseTotalAmounts ? ($allBaseTotalAmounts - $minimumTotal) : $points);
 
                 $total->addTotalAmount($this->getCode(), $totalSale);
                 $total->addBaseTotalAmount($this->getCode(), $totalBaseSale);
